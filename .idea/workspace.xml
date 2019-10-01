@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="35d9c310-418a-4c25-afe0-6d06f18a1d21" name="Default Changelist" comment="" />
+    <list default="true" id="35d9c310-418a-4c25-afe0-6d06f18a1d21" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Parser/Parser/items.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/Parser/items.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Parser/Parser/middlewares.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/Parser/middlewares.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Parser/Parser/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/Parser/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Parser/Parser/spiders/parse_spider.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/Parser/spiders/parse_spider.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1RXsmDkIkcyHicZQqw03nv3DF21" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -33,5 +47,16 @@
       <updated>1569824932475</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

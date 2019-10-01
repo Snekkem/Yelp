@@ -101,3 +101,12 @@ class ParserDownloaderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+class ProxyMiddleware(object):
+
+    def process_request(self, request, spider):
+        logger = logging.getLogger(__name__)
+        self.logger.debug('Using Proxy')
+        request.meta['proxy'] = 'http://127.0.0.1:9743'
+        return None

@@ -11,11 +11,12 @@ import scrapy
 class ParserItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
-    links = scrapy.Field()
-    title = scrapy.Field()
+    product_link = scrapy.Field()
+    product_title = scrapy.Field()
     address = scrapy.Field()
-    phone = scrapy.Field()
+    product_phone = scrapy.Field()
     website = scrapy.Field()
     timetable = scrapy.Field()
-    reviews = scrapy.Field()
+    product_reviews = scrapy.Field()
+    product_about = scrapy.Field()
     pass
