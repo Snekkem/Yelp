@@ -2,12 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="35d9c310-418a-4c25-afe0-6d06f18a1d21" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Parser/Parser/items.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/Parser/items.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Parser/Parser/middlewares.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/Parser/middlewares.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Parser/Parser/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/Parser/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Parser/Parser/spiders/parse_spider.py" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/Parser/spiders/parse_spider.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Parser/text.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Parser/text.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipfile" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile.lock" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -53,7 +54,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

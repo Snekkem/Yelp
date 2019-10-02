@@ -16,7 +16,7 @@ NEWSPIDER_MODULE = 'Parser.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'Parser (+http://www.yourdomain.com)'
+#USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -46,15 +46,18 @@ ROBOTSTXT_OBEY = False
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-SPIDER_MIDDLEWARES = {
-    'Parser.middlewares.ProxyMiddleware': 543,
-}
+#SPIDER_MIDDLEWARES = {
+#    'Parser.middlewares.ProxyMiddleware': 543,
+#}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'Parser.middlewares.ParserDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+    'Parser.middlewares.ProxyMiddleware': 543,
+}
+
+
+PROXY_POOL_ENABLED = True
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html

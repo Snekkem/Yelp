@@ -4,6 +4,7 @@
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import logging
 
 from scrapy import signals
 
@@ -104,9 +105,8 @@ class ParserDownloaderMiddleware(object):
 
 
 class ProxyMiddleware(object):
+    logger = logging.getLogger(__name__)
 
     def process_request(self, request, spider):
-        logger = logging.getLogger(__name__)
         self.logger.debug('Using Proxy')
-        request.meta['proxy'] = 'http://127.0.0.1:9743'
-        return None
+        request.meta['proxy'] = 'http://109.70.189.56:35103'

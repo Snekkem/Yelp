@@ -5,7 +5,8 @@ from ..items import ParserItem
 
 class ParseSpiderSpider(scrapy.Spider):
     name = 'parse_spider'
-    start_urls = ['https://www.yelp.com/search?find_desc=Restaurants&find_loc=LA']
+    start_urls = ['https://www.yelp.com/search?find_desc=Restaurants&find_loc=LA&ns=1']
+
 
     def parse(self, response):
         # The main method of the spider. It scrapes the URL(s) specified in the
@@ -14,8 +15,8 @@ class ParseSpiderSpider(scrapy.Spider):
 
         # nextpageurl = '' #response.css('.u-space-l2 .text-align--left__373c0__2pnx_').css('::attr(href)').extract()
 
-        f = open('text.txt', 'a')
-
+        #f = open('text.txt', 'a')
+        #print(response.text)
         for item in self.scrape(response):
             yield item
 
