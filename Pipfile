@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 scrapy = "*"
 scrapy-user-agents = "*"
+sqlalchemy = "*"
+alembic = "*"
 
 [requires]
 python_version = "3.7"

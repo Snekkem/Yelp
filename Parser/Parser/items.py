@@ -13,10 +13,12 @@ class ParserItem(scrapy.Item):
     # name = scrapy.Field()
     product_link = scrapy.Field()
     product_title = scrapy.Field()
-    address = scrapy.Field()
+    product_address = scrapy.Field()
     product_phone = scrapy.Field()
-    website = scrapy.Field()
-    timetable = scrapy.Field()
+    product_timetable = scrapy.Field()
     product_reviews = scrapy.Field()
     product_about = scrapy.Field()
+    product_link_img = scrapy.Field()
+    product_email = scrapy.Field()
+
     pass

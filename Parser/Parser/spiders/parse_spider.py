@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+import time
+
 import scrapy
+
 from ..items import ParserItem
 
 
@@ -18,6 +21,7 @@ class ParseSpiderSpider(scrapy.Spider):
         #f = open('text.txt', 'a')
         #print(response.text)
         for item in self.scrape(response):
+            time.sleep(1)
             yield item
 
         # if nextpageurl:
@@ -58,9 +62,7 @@ class ParseSpiderSpider(scrapy.Spider):
         item['product_link'] = response.css('.text--offscreen__373c0__1SeFX+ .link-size--default__373c0__1skgq').css(
             '::text').extract_first()
 
-        item1 = response.xpath('//p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_"]')
-        item1 = item1.xpath('//span[@width="0"]/text()')
-        print(item1)
+
 
 
 
