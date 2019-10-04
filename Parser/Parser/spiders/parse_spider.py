@@ -8,8 +8,8 @@ from ..items import ParserItem
 
 class ParseSpiderSpider(scrapy.Spider):
     name = 'parse_spider'
+    page_number = 0
     start_urls = ['https://www.yelp.com/search?find_desc=Restaurants&find_loc=LA&ns=1']
-
 
     def parse(self, response):
         # The main method of the spider. It scrapes the URL(s) specified in the
@@ -18,11 +18,16 @@ class ParseSpiderSpider(scrapy.Spider):
 
         # nextpageurl = '' #response.css('.u-space-l2 .text-align--left__373c0__2pnx_').css('::attr(href)').extract()
 
-        #f = open('text.txt', 'a')
-        #print(response.text)
+        # f = open('text.txt', 'a')
+        # print(response.text)
         for item in self.scrape(response):
             time.sleep(1)
             yield item
+
+        next_page = 'https://www.yelp.com/search?find_desc=Restaurants&find_loc=LA&ns=1&start=' + str(ParseSpiderSpider.page_number) + ''
+        if ParseSpiderSpider.page_number is not None:
+            ParseSpiderSpider.page_number += 30
+            yield response.follow(next_page, callback=self.parse)
 
         # if nextpageurl:
         #  path = nextpageurl.extract_first()
@@ -59,11 +64,17 @@ class ParseSpiderSpider(scrapy.Spider):
             '::text').extract_first()
         item['product_reviews'] = response.css('.text-color--mid__373c0__3G312.text-size--large__373c0__1568g').css(
             '::text').extract_first()
+        item['product_address'] = response.css('.island-section__373c0__3vKXy .text-align--left__373c0__2pnx_ '
+                                               '.lemon--span__373c0__3997G').css('::text').extract()
+        item['product_timetable'] = response.css('.table-row__373c0__3wipe :nth-child(1) .text-align--left__373c0__2pnx_').css(
+            '::text').extract()
+
         item['product_link'] = response.css('.text--offscreen__373c0__1SeFX+ .link-size--default__373c0__1skgq').css(
             '::text').extract_first()
 
-
-
-
+        item1 = response.xpath(
+            '//p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_"]')
+        item1 = item1.xpath('//span[@width="0"]/text()')
+        print(item1)
 
         yield item  # Return the new phonenumber'd item back to scrape

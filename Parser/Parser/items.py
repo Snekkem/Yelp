@@ -21,4 +21,5 @@ class ParserItem(scrapy.Item):
     product_link_img = scrapy.Field()
     product_email = scrapy.Field()
 
+    next_page = scrapy.Field()
     pass
