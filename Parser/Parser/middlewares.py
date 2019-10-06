@@ -109,4 +109,4 @@ class ProxyMiddleware(object):
 
     def process_request(self, request, spider):
         self.logger.debug('Using Proxy')
-        request.meta['proxy'] = 'http://190.18.207.58:53281'
+        request.meta['proxy'] = 'http://119.192.195.83:443'

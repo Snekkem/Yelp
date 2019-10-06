@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 import time
 
 import scrapy
@@ -9,7 +10,15 @@ from ..items import ParserItem
 class ParseSpiderSpider(scrapy.Spider):
     name = 'parse_spider'
     page_number = 0
-    start_urls = ['https://www.yelp.com/search?find_desc=Restaurants&find_loc=LA&ns=1']
+    start_urls = ['https://www.yelp.com/search?find_desc=Restaurants&find_loc=LA&ns=1',
+                  'https://www.yelp.com/search?find_desc=Restaurants&find_loc=NY',
+                  'https://www.yelp.com/search?find_desc=Restaurants&find_loc=SF',
+                  'https://www.yelp.com/search?find_desc=Gyms&find_loc=SF',
+                  'https://www.yelp.com/search?find_desc=Gyms&find_loc=NY',
+                  'https://www.yelp.com/search?find_desc=Gyms&find_loc=LA',
+                  'https://www.yelp.com/search?find_desc=Spa&find_loc=LA',
+                  'https://www.yelp.com/search?find_desc=Spa&find_loc=NY',
+                  'https://www.yelp.com/search?find_desc=Spa&find_loc=SF']
 
     def parse(self, response):
         # The main method of the spider. It scrapes the URL(s) specified in the
@@ -59,22 +68,33 @@ class ParseSpiderSpider(scrapy.Spider):
     def get_phonenumber(self, response):
         # A scraper designed to operate on one of the profile pages
         item = response.meta['item']  # Get the item we passed from scrape()
-        item['product_title'] = response.css('.heading--inline__373c0__1F-Z6').css('::text').extract_first()
-        item['product_phone'] = response.css('.text--offscreen__373c0__1SeFX+ .text-align--left__373c0__2pnx_').css(
-            '::text').extract_first()
-        item['product_reviews'] = response.css('.text-color--mid__373c0__3G312.text-size--large__373c0__1568g').css(
-            '::text').extract_first()
-        item['product_address'] = response.css('.island-section__373c0__3vKXy .text-align--left__373c0__2pnx_ '
-                                               '.lemon--span__373c0__3997G').css('::text').extract()
-        item['product_timetable'] = response.css('.table-row__373c0__3wipe :nth-child(1) .text-align--left__373c0__2pnx_').css(
-            '::text').extract()
+        # item['rest_title'] = response.css('.heading--inline__373c0__1F-Z6').css('::text').extract_first()
+        # item['rest_phone'] = response.css('.text--offscreen__373c0__1SeFX+ .text-align--left__373c0__2pnx_').css(
+        #    '::text').extract_first()
+        # item['rest_reviews'] = response.css('.text-color--mid__373c0__3G312.text-size--large__373c0__1568g').css(
+        #     '::text').extract_first()
+        # item['rest_address'] = response.css('.island-section__373c0__3vKXy .text-align--left__373c0__2pnx_ '
+        #                                    '.lemon--span__373c0__3997G').css('::text').extract()
+        #  item['rest_timetable'] = response.css('.table-row__373c0__3wipe :nth-child(1) .text-align--left__373c0__2pnx_').css(
+        #      '::text').extract()
 
-        item['product_link'] = response.css('.text--offscreen__373c0__1SeFX+ .link-size--default__373c0__1skgq').css(
-            '::text').extract_first()
+        # item['rest_link'] = response.css('.text--offscreen__373c0__1SeFX+ .link-size--default__373c0__1skgq').css(
+        #     '::text').extract_first()
 
-        item1 = response.xpath(
-            '//p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_"]')
-        item1 = item1.xpath('//span[@width="0"]/text()')
-        print(item1)
+        # item1 = response.xpath(
+        #     '//p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_"]')
+        # item1 = item1.xpath('//span[@width="0"]/text()')
+        # print(item1)
+
+        # item['gym_title'] = response.css('.biz-page-title').css('::text').extract_first()
+
+        some = response.xpath('//*[@id="wrap"]/div[2]/div/div[1]/div/div[4]/div[1]/div/div[2]/ul/li[1]/div/strong/address/text()').extract()
+        some = re.sub(r'(\r\n|\r|\n)*\s\s+', "", str(some)).strip()
+        item['gym_address'] = some
+
+        # item['gym_phone'] = response.css('.biz-phone').css('::text').extract_first()
+        #  item['gym_link'] = response.css('.js-add-url-tagging a').css('::text').extract_first()
+        # item['gym_timetable'] = response.css('.hours-table .nowrap+ .nowrap , th , th+ td .nowrap').css(
+        #     '::text').extract()
 
         yield item  # Return the new phonenumber'd item back to scrape
