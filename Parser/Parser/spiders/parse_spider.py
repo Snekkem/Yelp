@@ -81,20 +81,25 @@ class ParseSpiderSpider(scrapy.Spider):
         # item['rest_link'] = response.css('.text--offscreen__373c0__1SeFX+ .link-size--default__373c0__1skgq').css(
         #     '::text').extract_first()
 
-        # item1 = response.xpath(
-        #     '//p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_"]')
-        # item1 = item1.xpath('//span[@width="0"]/text()')
-        # print(item1)
+        about = response.xpath(
+             '//p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_"]')
+        about = about.xpath('//span[@width="0"]/text()').extract()
+        item['rest_about'] = about
 
-        # item['gym_title'] = response.css('.biz-page-title').css('::text').extract_first()
+        item['gym_title'] = response.css('.biz-page-title').css('::text').extract_first()
 
         some = response.xpath('//*[@id="wrap"]/div[2]/div/div[1]/div/div[4]/div[1]/div/div[2]/ul/li[1]/div/strong/address/text()').extract()
-        some = re.sub(r'(\r\n|\r|\n)*\s\s+', "", str(some)).strip()
+        some = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n|\\n|\\r)?|\s\s+', "", str(some)).strip()
         item['gym_address'] = some
 
-        # item['gym_phone'] = response.css('.biz-phone').css('::text').extract_first()
-        #  item['gym_link'] = response.css('.js-add-url-tagging a').css('::text').extract_first()
-        # item['gym_timetable'] = response.css('.hours-table .nowrap+ .nowrap , th , th+ td .nowrap').css(
-        #     '::text').extract()
+        phone = response.css('.biz-phone').css('::text').extract_first()
+        phone = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n)*\s\s+', "", str(phone)).strip()
+        item['gym_phone'] = phone
+        item['gym_link'] = response.css('.js-add-url-tagging a').css('::text').extract_first()
+        table = response.xpath('//table[@class="table table-simple hours-table"]')
+        table = table.xpath('//span[@class="nowrap"]/text()').extract()
+        item['gym_timetable'] = table
+
+        item['gym_link_img'] = response.css('.photo-2 .photo-box-img').css('::attr(src)').extract_first()
 
         yield item  # Return the new phonenumber'd item back to scrape
