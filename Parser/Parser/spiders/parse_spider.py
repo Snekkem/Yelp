@@ -82,7 +82,7 @@ class ParseSpiderSpider(scrapy.Spider):
         #     '::text').extract_first()
 
         about = response.xpath(
-             '//p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_"]')
+            '//p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_"]')
         about = about.xpath('//span[@width="0"]/text()').extract()
         item['rest_about'] = about
 
@@ -97,8 +97,23 @@ class ParseSpiderSpider(scrapy.Spider):
         item['gym_phone'] = phone
         item['gym_link'] = response.css('.js-add-url-tagging a').css('::text').extract_first()
         table = response.xpath('//table[@class="table table-simple hours-table"]')
-        table = table.xpath('//span[@class="nowrap"]/text()').extract()
-        item['gym_timetable'] = table
+        times = table.xpath('//span[@class="nowrap"]/text()').extract()
+        days = table.xpath('//th[@scope="row"]/text()').getall()
+
+        listData = []
+        temp = []
+        result = []
+
+        for el in days:
+            listData.append(el)
+
+        for el in times:
+            temp.append(el)
+
+        for el in range(7):
+            result.append(listData.index([el]) + temp.index([el]))
+
+        item['gym_timetable'] = result
 
         item['gym_link_img'] = response.css('.photo-2 .photo-box-img').css('::attr(src)').extract_first()
 
