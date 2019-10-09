@@ -33,9 +33,9 @@ class ParseSpiderSpider(scrapy.Spider):
             time.sleep(1)
             yield item
 
-        next_page = 'https://www.yelp.com/search?find_desc=Restaurants&find_loc=LA&ns=1&start=' + str(ParseSpiderSpider.page_number) + ''
         if ParseSpiderSpider.page_number is not None:
-            ParseSpiderSpider.page_number += 30
+            next_page = 'https://www.yelp.com' + response.css('.navigation-button__373c0__2fJmR').css('::attr(href)').ectract_first()
+            print(next_page)
             yield response.follow(next_page, callback=self.parse)
 
         # if nextpageurl:
@@ -69,63 +69,75 @@ class ParseSpiderSpider(scrapy.Spider):
         # A scraper designed to operate on one of the profile pages
         item = response.meta['item']  # Get the item we passed from scrape()
 
-        item['rest_title'] = response.css('.heading--inline__373c0__1F-Z6').css('::text').extract_first()
-        item['rest_phone'] = response.css('.text--offscreen__373c0__1SeFX+ .text-align--left__373c0__2pnx_').css(
-            '::text').extract_first()
-        item['rest_reviews'] = response.css('.text-color--mid__373c0__3G312.text-size--large__373c0__1568g').css(
-             '::text').extract_first()
-        item['rest_address'] = response.css('.island-section__373c0__3vKXy .text-align--left__373c0__2pnx_ '
-                                            '.lemon--span__373c0__3997G').css('::text').extract()
-        item['rest_timetable'] = response.css('.table-row__373c0__3wipe :nth-child(1) .text-align--left__373c0__2pnx_').css(
-              '::text').extract()
+        isTitleRest = response.css('.heading--inline__373c0__1F-Z6').css('::text').extract_first()
+        isTitleOther = response.css('.biz-page-title').css('::text').extract_first()
 
-        item['rest_link'] = response.css('.text--offscreen__373c0__1SeFX+ .link-size--default__373c0__1skgq').css(
-             '::text').extract_first()
+        if isTitleRest is not None:
+            item['rest_title'] = isTitleRest
 
-        about = response.xpath(
-            '//p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_"]')
-        about = about.xpath('//span[@width="0"]').xpath("/span").extract_first()
-        item['rest_about'] = about
+            item['rest_phone'] = response.css('.text--offscreen__373c0__1SeFX+ .text-align--left__373c0__2pnx_').css(
+                '::text').extract_first()
+            item['rest_reviews'] = response.css('.text-color--mid__373c0__3G312.text-size--large__373c0__1568g').css(
+                '::text').extract_first()
+            item['rest_address'] = response.css('.island-section__373c0__3vKXy .text-align--left__373c0__2pnx_ '
+                                                '.lemon--span__373c0__3997G').css('::text').extract()
 
-        item['gym_title'] = response.css('.biz-page-title').css('::text').extract_first()
+            days = response.css('.table-header-cell__373c0___pz7p .text-align--left__373c0__2pnx_').css('::text').extract()
+            times = response.css('.no-wrap__373c0__3qDj1.text-color--normal__373c0__K_MKN').css('::text').extract()
+            table = []
 
-        rev = response.css('.biz-rating-very-large .rating-qualifier').css('::text').extract_first()
-        rev = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n)*\s\s+', "", str(rev)).strip()
-        item['gym_reviews'] = rev
+            for el in range(0, 7):
+                table.append(days[el] + ' ' + times[el])
 
+            item['rest_timetable'] = table
 
-        some = response.xpath('//*[@id="wrap"]/div[2]/div/div[1]/div/div[4]/div[1]/div/div[2]/ul/li[1]/div/strong/address/text()').extract()
-        some = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n|\\n|\\r)?|\s\s+', "", str(some)).strip()
-        item['gym_address'] = some
+            item['rest_link'] = response.css('.text--offscreen__373c0__1SeFX+ .link-size--default__373c0__1skgq').css(
+                '::text').extract_first()
 
-        phone = response.css('.biz-phone').css('::text').extract_first()
-        phone = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n)*\s\s+', "", str(phone)).strip()
-        item['gym_phone'] = phone
-        item['gym_link'] = response.css('.js-add-url-tagging a').css('::text').extract_first()
-        table = response.xpath('//table[@class="table table-simple hours-table"]')
+            about = response.xpath(
+                '//p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_"]')
+            about = about.xpath('//span[@width="0"]').xpath("/span").extract_first()
+            item['rest_about'] = about
 
-        times = table.xpath('//span[@class="nowrap"]/text()').extract()
-        days = table.xpath('//th[@scope="row"]/text()').getall()
+        if isTitleOther is not None:
+            item['gym_title'] = isTitleOther
 
-        listData = []
-        temp = []
-        result = []
+            rev = response.css('.biz-rating-very-large .rating-qualifier').css('::text').extract_first()
+            rev = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n)*\s\s+', "", str(rev)).strip()
+            item['gym_reviews'] = rev
 
-        try:
-            for el in range(5, 12):
-                listData.append(days[el])
+            some = response.xpath('//*[@id="wrap"]/div[2]/div/div[1]/div/div[4]/div[1]/div/div[2]/ul/li[1]/div/strong/address/text()').extract()
+            some = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n|\\n|\\r)?|\s\s+', "", str(some)).strip()
+            item['gym_address'] = some
 
-            for el in range(2, 16, 2):
-                temp.append(times[el] + ' ' + times[el + 1])
+            phone = response.css('.biz-phone').css('::text').extract_first()
+            phone = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n)*\s\s+', "", str(phone)).strip()
+            item['gym_phone'] = phone
+            item['gym_link'] = response.css('.js-add-url-tagging a').css('::text').extract_first()
+            table = response.xpath('//table[@class="table table-simple hours-table"]')
 
-            for el in range(7):
-                result.append(listData[el] + ' ' + temp[el])
-        except IndexError:
-            print('s')
+            times = table.xpath('//span[@class="nowrap"]/text()').extract()
+            days = table.xpath('//th[@scope="row"]/text()').getall()
 
-        item['gym_timetable'] = result
+            listData = []
+            temp = []
+            result = []
 
-        item['gym_link_img'] = response.css('.photo-2 .photo-box-img').css('::attr(src)').extract_first()
+            try:
+                for el in range(5, 12):
+                    listData.append(days[el])
+
+                for el in range(2, 16, 2):
+                    temp.append(times[el] + ' ' + times[el + 1])
+
+                for el in range(7):
+                    result.append(listData[el] + ' ' + temp[el])
+            except IndexError:
+                print('s')
+
+            item['gym_timetable'] = result
+
+            item['gym_link_img'] = response.css('.photo-2 .photo-box-img').css('::attr(src)').extract_first()
 
         yield item  # Return the new phonenumber'd item back to scrape
     # scrapy crawl parse_spider
