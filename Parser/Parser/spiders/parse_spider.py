@@ -34,8 +34,15 @@ class ParseSpiderSpider(scrapy.Spider):
             yield item
 
         if ParseSpiderSpider.page_number is not None:
-            next_page = 'https://www.yelp.com' + response.css('.navigation-button__373c0__2fJmR').css('::attr(href)').ectract_first()
+            selector = response.css('.navigation-button__373c0__2fJmR').css('::attr(href)').extract_first()
+            next_page = 'https://www.yelp.com' + str(selector)
             print(next_page)
+            print('HI')
+            print('HI')
+            print('HI')
+            print('HI')
+            print('HI')
+            print('HI')
             yield response.follow(next_page, callback=self.parse)
 
         # if nextpageurl:
@@ -90,6 +97,8 @@ class ParseSpiderSpider(scrapy.Spider):
                 table.append(days[el] + ' ' + times[el])
 
             item['rest_timetable'] = table
+
+            item['rest_link_img'] = response.xpath('//*[@id="wrap"]/div[3]/div/div[1]/div[2]/div[1]/div/div[1]/a/img/src').extract_first()
 
             item['rest_link'] = response.css('.text--offscreen__373c0__1SeFX+ .link-size--default__373c0__1skgq').css(
                 '::text').extract_first()
