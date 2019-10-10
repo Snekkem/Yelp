@@ -9,32 +9,67 @@ from ..items import ParserItem
 
 class ParseSpiderSpider(scrapy.Spider):
     name = 'parse_spider'
-    start_urls = ['https://www.yelp.com/search?find_desc=Restaurants&find_loc=LA']
+    page_number = 0
+    start_urls = ['https://www.yelp.com/search?find_desc=Restaurants&find_loc=LA',
+                  'https://www.yelp.com/search?find_desc=Restaurants&find_loc=NY',
+                  'https://www.yelp.com/search?find_desc=Restaurants&find_loc=SF',
+                  'https://www.yelp.com/search?find_desc=Gyms&find_loc=SF',
+                  'https://www.yelp.com/search?find_desc=Gyms&find_loc=NY',
+                  'https://www.yelp.com/search?find_desc=Gyms&find_loc=LA',
+                  'https://www.yelp.com/search?find_desc=Spa&find_loc=SF',
+                  'https://www.yelp.com/search?find_desc=Spa&find_loc=NY',
+                  'https://www.yelp.com/search?find_desc=Spa&find_loc=LA']
 
     def parse(self, response):
-        # The main method of the spider. It scrapes the URL(s) specified in the
-        # 'start_url' argument above. The content of the scraped URL is passed on
-        # as the 'response' object.
-
-        # nextpageurl = '' #response.css('.u-space-l2 .text-align--left__373c0__2pnx_').css('::attr(href)').extract()
-
-        # f = open('text.txt', 'a')
-        # print(response.text)
-
         for item in self.scrape(response):
             time.sleep(1)
             yield item
 
-        nextpageurl = response.css('.next-link').css('::attr(href)').extract_first()
-        print(nextpageurl)
+        next_page_rest_la = 'https://www.yelp.com/search?find_desc=Restaurants&find_loc=LA&start=' + str(ParseSpiderSpider.page_number) + ''
+        next_page_rest_ny = 'https://www.yelp.com/search?find_desc=Restaurants&find_loc=NY&start=' + str(ParseSpiderSpider.page_number) + ''
+        next_page_rest_sf = 'https://www.yelp.com/search?find_desc=Restaurants&find_loc=SF&start=' + str(ParseSpiderSpider.page_number) + ''
+        next_page_gym_la = 'https://www.yelp.com/search?find_desc=Gyms&find_loc=LA&start=' + str(ParseSpiderSpider.page_number) + ''
+        next_page_gym_ny = 'https://www.yelp.com/search?find_desc=Gyms&find_loc=NY&start=' + str(ParseSpiderSpider.page_number) + ''
+        next_page_gym_sf = 'https://www.yelp.com/search?find_desc=Gyms&find_loc=SF&start=' + str(ParseSpiderSpider.page_number) + ''
+        next_page_spa_la = 'https://www.yelp.com/search?find_desc=Spa&find_loc=LA&start=' + str(ParseSpiderSpider.page_number) + ''
+        next_page_spa_ny = 'https://www.yelp.com/search?find_desc=Spa&find_loc=NY&start=' + str(ParseSpiderSpider.page_number) + ''
+        next_page_spa_sf = 'https://www.yelp.com/search?find_desc=Spa&find_loc=SF&start=' + str(ParseSpiderSpider.page_number) + ''
 
+        if ParseSpiderSpider.page_number <= 1000:
+            ParseSpiderSpider.page_number += 30
+            yield response.follow(next_page_rest_la, callback=self.parse)
 
+        if ParseSpiderSpider.page_number <= 1000:
+            ParseSpiderSpider.page_number += 30
+            yield response.follow(next_page_rest_ny, callback=self.parse)
 
-        # if nextpageurl:
-        #  path = nextpageurl.extract_first()
-        # nextpage = response.urljoin(path)
-        #  print("Found url: {}".format(nextpage))
-        # yield scrapy.Request(nextpage, callback=self.parse)
+        if ParseSpiderSpider.page_number <= 1000:
+            ParseSpiderSpider.page_number += 30
+            yield response.follow(next_page_rest_sf, callback=self.parse)
+
+        if ParseSpiderSpider.page_number <= 1000:
+            ParseSpiderSpider.page_number += 10
+            yield response.follow(next_page_gym_la, callback=self.parse)
+
+        if ParseSpiderSpider.page_number <= 1000:
+            ParseSpiderSpider.page_number += 10
+            yield response.follow(next_page_gym_ny, callback=self.parse)
+
+        if ParseSpiderSpider.page_number <= 1000:
+            ParseSpiderSpider.page_number += 10
+            yield response.follow(next_page_gym_sf, callback=self.parse)
+
+        if ParseSpiderSpider.page_number <= 1000:
+            ParseSpiderSpider.page_number += 10
+            yield response.follow(next_page_spa_la, callback=self.parse)
+
+        if ParseSpiderSpider.page_number <= 1000:
+            ParseSpiderSpider.page_number += 10
+            yield response.follow(next_page_spa_ny, callback=self.parse)
+
+        if ParseSpiderSpider.page_number <= 1000:
+            ParseSpiderSpider.page_number += 10
+            yield response.follow(next_page_spa_sf, callback=self.parse)
 
     def scrape(self, response):
         for resource in response.css('.text-color--black-regular__373c0__38bRH .link-size--inherit__373c0__2JXk5'):
@@ -92,9 +127,7 @@ class ParseSpiderSpider(scrapy.Spider):
                 '::text').extract_first()
 
             about = response.css('.u-space-b1 .text-align--left__373c0__2pnx_ span span').css('::text').extract()
-            text = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n)*\s\s+', "", str(about)).strip()
-            for el in text:
-                item['rest_about'] = el.extract_first()
+            item['rest_about'] = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n|\\n|\\r)?|\s\s+', "", str(about)[2:-7]).strip()
 
         if isTitleOther is not None:
             item['gym_title'] = isTitleOther
@@ -106,6 +139,10 @@ class ParseSpiderSpider(scrapy.Spider):
             some = response.xpath('//*[@id="wrap"]/div[2]/div/div[1]/div/div[4]/div[1]/div/div[2]/ul/li[1]/div/strong/address/text()').extract()
             some = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n|\\n|\\r)?|\s\s+', "", str(some)).strip()
             item['gym_address'] = some
+
+            about = response.css('.js-from-biz-owner p').css('::text').extract()
+            about = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n|\\n|\\r)?|\s\s+', "", str(about)[2:-7]).strip()
+            item['gym_about'] = about
 
             phone = response.css('.biz-phone').css('::text').extract_first()
             phone = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n)*\s\s+', "", str(phone)).strip()
