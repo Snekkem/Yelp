@@ -11,6 +11,7 @@ scrapy-user-agents = "*"
 sqlalchemy = "*"
 alembic = "*"
 scrapy-pool-proxy = "*"
+scrapy-proxy-pool = "*"
 
 [requires]
 python_version = "3.7"

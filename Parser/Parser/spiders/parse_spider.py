@@ -9,16 +9,7 @@ from ..items import ParserItem
 
 class ParseSpiderSpider(scrapy.Spider):
     name = 'parse_spider'
-    page_number = 0
-    start_urls = ['https://www.yelp.com/search?find_desc=Restaurants&find_loc=LA&ns=1',
-                  'https://www.yelp.com/search?find_desc=Restaurants&find_loc=NY',
-                  'https://www.yelp.com/search?find_desc=Restaurants&find_loc=SF',
-                  'https://www.yelp.com/search?find_desc=Gyms&find_loc=SF',
-                  'https://www.yelp.com/search?find_desc=Gyms&find_loc=NY',
-                  'https://www.yelp.com/search?find_desc=Gyms&find_loc=LA',
-                  'https://www.yelp.com/search?find_desc=Spa&find_loc=LA',
-                  'https://www.yelp.com/search?find_desc=Spa&find_loc=NY',
-                  'https://www.yelp.com/search?find_desc=Spa&find_loc=SF']
+    start_urls = ['https://www.yelp.com/search?find_desc=Restaurants&find_loc=LA']
 
     def parse(self, response):
         # The main method of the spider. It scrapes the URL(s) specified in the
@@ -29,21 +20,15 @@ class ParseSpiderSpider(scrapy.Spider):
 
         # f = open('text.txt', 'a')
         # print(response.text)
+
         for item in self.scrape(response):
             time.sleep(1)
             yield item
 
-        if ParseSpiderSpider.page_number is not None:
-            selector = response.css('.navigation-button__373c0__2fJmR').css('::attr(href)').extract_first()
-            next_page = 'https://www.yelp.com' + str(selector)
-            print(next_page)
-            print('HI')
-            print('HI')
-            print('HI')
-            print('HI')
-            print('HI')
-            print('HI')
-            yield response.follow(next_page, callback=self.parse)
+        nextpageurl = response.css('.next-link').css('::attr(href)').extract_first()
+        print(nextpageurl)
+
+
 
         # if nextpageurl:
         #  path = nextpageurl.extract_first()
@@ -92,21 +77,24 @@ class ParseSpiderSpider(scrapy.Spider):
             days = response.css('.table-header-cell__373c0___pz7p .text-align--left__373c0__2pnx_').css('::text').extract()
             times = response.css('.no-wrap__373c0__3qDj1.text-color--normal__373c0__K_MKN').css('::text').extract()
             table = []
-
-            for el in range(0, 7):
-                table.append(days[el] + ' ' + times[el])
+            try:
+                for el in range(0, 7):
+                    table.append(days[el] + ' ' + times[el])
+            except IndexError:
+                print('s')
 
             item['rest_timetable'] = table
 
-            item['rest_link_img'] = response.xpath('//*[@id="wrap"]/div[3]/div/div[1]/div[2]/div[1]/div/div[1]/a/img/src').extract_first()
+            item['rest_link_img'] = response.css('.display--inline-block__373c0__2de_K:nth-child(1) .lemon--img__373c0__3GQUb').css(
+                '::attr(src)').extract_first()
 
             item['rest_link'] = response.css('.text--offscreen__373c0__1SeFX+ .link-size--default__373c0__1skgq').css(
                 '::text').extract_first()
 
-            about = response.xpath(
-                '//p[@class="lemon--p__373c0__3Qnnj text__373c0__2pB8f text-color--normal__373c0__K_MKN text-align--left__373c0__2pnx_"]')
-            about = about.xpath('//span[@width="0"]').xpath("/span").extract_first()
-            item['rest_about'] = about
+            about = response.css('.u-space-b1 .text-align--left__373c0__2pnx_ span span').css('::text').extract()
+            text = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n)*\s\s+', "", str(about)).strip()
+            for el in text:
+                item['rest_about'] = el.extract_first()
 
         if isTitleOther is not None:
             item['gym_title'] = isTitleOther
