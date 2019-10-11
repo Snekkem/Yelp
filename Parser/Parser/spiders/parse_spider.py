@@ -126,8 +126,8 @@ class ParseSpiderSpider(scrapy.Spider):
             item['rest_link'] = response.css('.text--offscreen__373c0__1SeFX+ .link-size--default__373c0__1skgq').css(
                 '::text').extract_first()
 
-            about = response.css('.u-space-b1 .text-align--left__373c0__2pnx_ span span').css('::text').extract()
-            item['rest_about'] = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n|\\n|\\r)?|\s\s+', "", str(about)[2:-7]).strip()
+            about = response.css('.u-space-b1 .text-align--left__373c0__2pnx_ span span').css('::text').extract_first()
+            item['rest_about'] = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n|\\n|\\r|\\\\s|\\xa0|\\\\xa0|\\\')?|\s\s+', "", str(about)[2:-7]).strip()
 
         if isTitleOther is not None:
             item['gym_title'] = isTitleOther
@@ -137,16 +137,17 @@ class ParseSpiderSpider(scrapy.Spider):
             item['gym_reviews'] = rev
 
             some = response.xpath('//*[@id="wrap"]/div[2]/div/div[1]/div/div[4]/div[1]/div/div[2]/ul/li[1]/div/strong/address/text()').extract()
-            some = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n|\\n|\\r)?|\s\s+', "", str(some)).strip()
+            some = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n|\\n|\\r)*\s\s+', "", str(some)).strip()
             item['gym_address'] = some
 
             about = response.css('.js-from-biz-owner p').css('::text').extract()
-            about = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n|\\n|\\r)?|\s\s+', "", str(about)[2:-7]).strip()
+            about = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n|\\n|\\r|\\\\s|\\xa0|\\\\xa0|\\\')?|\s\s+', "", str(about)[2:-7]).strip()
             item['gym_about'] = about
 
             phone = response.css('.biz-phone').css('::text').extract_first()
             phone = re.sub(r'(\\\\r|\\\\n|\\\\r\\\\n)*\s\s+', "", str(phone)).strip()
             item['gym_phone'] = phone
+
             item['gym_link'] = response.css('.js-add-url-tagging a').css('::text').extract_first()
             table = response.xpath('//table[@class="table table-simple hours-table"]')
 
